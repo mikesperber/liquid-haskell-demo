@@ -8,9 +8,8 @@ maintainer:          michael.sperber@active-group.de
 library
   build-depends:       base,
                        containers,
-                       liquidhaskell,
-                       liquid-prelude,
-                       liquid-vector
+                       liquidhaskell-boot,
+                       liquidhaskell
 
   -- hs-source-dirs:
   default-language:    Haskell2010
@@ -18,4 +17,3 @@ library
 
   exposed-modules: Intro
 
---  extra-prog-path: ./.bin

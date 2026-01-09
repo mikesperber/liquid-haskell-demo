@@ -20,18 +20,14 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1752237405,
-        "narHash": "sha256-6CeyoHtQOatZen9ZMWj1+Ng+//F73DP9KJNiSQzbB4s=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "1c10015bdae29168290fdef6311338bb05efd4ce",
-        "type": "github"
+        "lastModified": 1767881015,
+        "narHash": "sha256-kuYW59YzMO0GgpYBGlq1rUTYvQ6XRyFARa89wcoGn3s=",
+        "path": "/Users/sperber/build/nixpkgs",
+        "type": "path"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "release-25.05",
-        "repo": "nixpkgs",
-        "type": "github"
+        "path": "/Users/sperber/build/nixpkgs",
+        "type": "path"
       }
     },
     "nixpkgs-lib": {
