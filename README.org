@@ -1,0 +1,18 @@
+#+TITLE: Formal Methods
+
+* Slides
+
+Build with
+
+#+begin_src bash
+make slides
+#+end_src
+
+* Nix Flake
+
+The Nix Flake contains the following dev shells:
+
+* =haskell= with a setup for Liquid Haskell
+* =verifast= with the Verifast package
+
+Run with =nix develop .#<devshell>=.
