@@ -1,13 +1,13 @@
-SOURCES = $(wildcard *.org)
+SOURCES = $(wildcard slides/*.org)
 HTML = $(SOURCES:.org=.html)
 PDF = $(SOURCES:.org=.pdf)
 CHROME = $(shell which google-chrome-beta || which google-chrome-stable || which google-chrome || which chromium || echo "`pwd`/mac-chrome.sh")
 MAYBE_CHROME_PATH = $(if $(CHROME),--chrome-path $(CHROME),)
 RESOURCES = $(shell find css -type f)
 
-ONEPDF=all-slides.pdf
+ONEPDF=slides/all-slides.pdf
 
-all: $(HTML)
+slides: $(HTML)
 .PHONY: all
 
 flake.lock: flake.nix
@@ -15,11 +15,11 @@ flake.lock: flake.nix
 
 # If the lockfile changes, slides need to be rebuilt
 %.html: %.org flake.lock
-	nix run .# -- "$<"
+	nix run .#slides -- "$<"
 
 # Use a specific window size to work around this issue:
 # https://github.com/astefanutti/decktape/issues/151
-%.pdf: %.html $(RESOURCES)
+slides/%.pdf: %.html $(RESOURCES)
 	nix build .#decktapeWithDependencies -o result-decktape
 	nix run .#decktape -- -s 2048x1536 $(MAYBE_CHROME_PATH) "$<" "$@"
 
