@@ -37,7 +37,7 @@
                         store = hlib.dontCheck hprev.store;
                         liquidhaskell-boot = hprev.liquidhaskell-boot_0_9_12_2;
                         liquid-fixpoint = hlib.dontCheck hprev.liquid-fixpoint_0_9_6_3_3;
-                        liquidhaskell = hprev.liquidhaskell_0_9_12_2;
+                        liquidhaskell = hlib.overrideCabal (drv: { doHaddock = false; }) hprev.liquidhaskell_0_9_12_2;
                       }
                     );
                   });
