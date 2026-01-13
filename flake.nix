@@ -186,7 +186,6 @@
             slides =
               let
                 app = pkgs.writeShellScript "org-re-reveal" ''
-                  set -x
                   if [ ! -e slides/plantuml/plugins ]; then
                     mkdir -p slides/plantuml/plugins
                     ln -snf ${inputs.plantumlC4}/*.puml slides/plantuml/plugins/.
