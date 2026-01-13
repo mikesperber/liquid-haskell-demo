@@ -4,10 +4,37 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-utils.url = "github:numtide/flake-utils";
+    revealjs = {
+      url = "github:hakimel/reveal.js";
+      flake = false;
+    };
+    mathjax = {
+      url = "github:mathjax/mathjax";
+      flake = false;
+    };
+    plantumlC4 = {
+      url = "github:plantuml-stdlib/c4-plantuml";
+      flake = false;
+    };
+    plantumlEIP = {
+      url = "github:plantuml-stdlib/EIP-PlantUML";
+      flake = false;
+    };
+    decktape = {
+      url = "github:astefanutti/decktape";
+      flake = false;
+    };
   };
 
   outputs =
-    inputs@{ self, flake-parts, ... }:
+    inputs@{
+      self,
+      flake-parts,
+      flake-utils,
+      nixpkgs,
+      ...
+    }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -20,7 +47,16 @@
         let
           # Pin GHC version for easier, explicit upgrades later
           ghcVersion = "9122";
-          pkgs = import inputs.nixpkgs {
+          legacyPackages = nixpkgs.legacyPackages.${system};
+          nixpkgsPatched = legacyPackages.applyPatches {
+            name = "verifast-on-macos";
+            src = nixpkgs;
+            patches = legacyPackages.fetchpatch {
+              url = "https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/429378.patch";
+              hash = "sha256-Xtm/5VhoaLW6T1uKbDOZiw+ZaFQcUZy3cmWdNTHHIHE=";
+            };
+          };
+          pkgs = import nixpkgsPatched {
             inherit system;
             config.allowUnfree = true;
             overlays = [
@@ -47,6 +83,11 @@
               )
             ];
           };
+          emacs = pkgs.emacs30.pkgs.withPackages (p: [
+            p.org-re-reveal
+            p.haskell-mode
+          ]);
+
           hlib = pkgs.haskell.lib.compose;
         in
         {
@@ -73,7 +114,7 @@
                 ];
                 shellHook = ''
                   export PS1="\n\[\033[1;32m\][nix-shell:\W \[\033[1;31m\]FM\[\033[1;32m\]]\$\[\033[0m\] "
-                  echo -e "\n\033[1;31m ♣ ♠ Welcome to FM! ♥ ♦ \033[0m\n"
+                  echo -e "\n\033[1;31m ♣ ♠ Welcome to FM - Haskell! ♥ ♦ \033[0m\n"
                   echo -e "   Use the following command to open VSCode in this directory:\n"
                   echo "       code ."
                 '';
@@ -96,6 +137,18 @@
                   old.shellHook + ''echo -e "\n   All required extensions should be pre-installed and ready."'';
               }
             );
+
+            verifast = pkgs.mkShell {
+              packages = [
+                pkgs.verifast
+              ];
+
+              shellHook = ''
+                export PS1="\n\[\033[1;32m\][nix-shell:\W \[\033[1;31m\]FM\[\033[1;32m\]]\$\[\033[0m\] "
+                echo -e "\n\033[1;31m ♣ ♠ Welcome to FM - Verifast! ♥ ♦ \033[0m\n"
+              '';
+            };
+
           };
 
           legacyPackages = pkgs;
@@ -104,10 +157,77 @@
             hls = pkgs.haskell-language-server.override {
               supportedGhcVersions = [ ghcVersion ];
             };
+            # To be able to specifically build decktape without the Nix sandbox,
+            # we need to make it a package instead of an app.
+            decktapeWithDependencies = pkgs.stdenv.mkDerivation {
+              name = "decktape-with-dependencies";
+              src = inputs.decktape;
+              buildInputs = [
+                pkgs.nodejs
+                pkgs.cacert
+              ];
+              buildPhase = "HOME=$TMP npm install";
+              installPhase = "cp -r . $out";
+            };
+
+            # Provide the Emacs that is used to build the slides; might be useful
+            # for debugging.
+            emacs = pkgs.writeShellScriptBin "reveal-emacs" ''
+              ${emacs}/bin/emacs -Q
+            '';
 
             watch = pkgs.writeShellScriptBin "watch-and-commit" ''
               ${pkgs.lib.getExe pkgs.watch} -n 10 "git add . && git commit -m update && git push"
             '';
+          };
+
+          apps = {
+            # The default target for `nix run`. This builds the reveal.js slides.
+            slides =
+              let
+                app = pkgs.writeShellScript "org-re-reveal" ''
+                  set -x
+                  if [ ! -e slides/plantuml/plugins ]; then
+                    mkdir -p slides/plantuml/plugins
+                    ln -snf ${inputs.plantumlC4}/*.puml slides/plantuml/plugins/.
+                    echo Symlinked PlantUML C4 to ./slides/plantuml/plugins
+                    ln -snf ${inputs.plantumlEIP}/dist/*.puml slides/plantuml/plugins/.
+                    echo Symlinked PlantUML EIP to ./slides/plantuml/plugins
+                  fi
+
+                  export REVEAL_ROOT="${inputs.revealjs}"
+                  export REVEAL_MATHJAX_URL=
+                  export PATH=${pkgs.plantuml}/bin:$PATH
+                  echo $@
+                  ${emacs}/bin/emacs --batch -q -l slides/export.el \
+                      --eval="(org-re-reveal-export-file \"$@\" \"${inputs.revealjs}\" \"${inputs.mathjax}/tex-chtml.js\")"
+                '';
+              in
+              {
+                type = "app";
+                program = "${app}";
+              };
+
+            # May be used to create the PDF version of the talk. See the Makefile
+            # for an actual invocation.
+            decktape =
+              let
+                app = pkgs.writeShellScript "run-decktape" "${pkgs.nodejs}/bin/node ${
+                  self.packages.${system}.decktapeWithDependencies
+                }/decktape.js $@";
+              in
+              {
+                type = "app";
+                program = "${app}";
+              };
+            pdfunite =
+              let
+                poppler = pkgs.poppler_utils;
+              in
+              {
+                type = "app";
+                program = "${poppler}/bin/pdfunite";
+              };
           };
         };
     };

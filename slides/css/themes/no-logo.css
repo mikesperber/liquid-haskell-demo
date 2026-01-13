@@ -1,0 +1,4 @@
+/* Usage: Add `#+REVEAL_EXTRA_CSS: ./css/themes/no-logo.css` to your org file. */
+
+.slide-background:before {
+  background-image: none; }

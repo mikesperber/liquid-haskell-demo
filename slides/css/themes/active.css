@@ -1,0 +1,30 @@
+@charset "UTF-8";
+/**
+ * Active theme for reveal.js.
+ *
+ */
+
+@import url(active-common.css);
+
+:root {
+    --color-background: white;
+    --color-foreground: #333;
+    --color-highlight: #ad4c3f;
+    --color-selection-background: rgba(79, 64, 28, 0.99);
+    --color-selection-foreground: white;
+    --color-blockquote-background: rgba(255, 255, 255, 0.05);
+    --color-blockquote-box-shadow: rgba(0, 0, 0, 0.2);
+    --color-pre-box-shadow: rgba(0, 0, 0, 0.15);
+    --color-hover: #d18a81;
+    --color-progress: #d16262;
+    --color-progress-background: rgba(0, 0, 0, 0.2);
+    --color-progress-background-color: #832518;
+    --color-roll: #fff;
+    --color-roll-background: #75332b;
+    --color-img-background: rgba(255, 255, 255, 0.12);
+    --color-img-border: #333;
+    --color-img-box-shadow: rgba(0, 0, 0, 0.15);
+    --color-hover-img-background: rgba(255, 255, 255, 0.2);
+    --color-hover-img-box-shadow: rgba(0, 0, 0, 0.55);
+    --color-print-background: #fff;
+}

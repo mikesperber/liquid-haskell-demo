@@ -1,0 +1,80 @@
+#+title: FIXME
+#+author: Foo Bar
+#+REVEAL_PLUGINS: (notes)
+#+REVEAL_THEME: ./css/themes/active.css
+#+REVEAL_HLEVEL: 100
+#+REVEAL_TRANS: none
+#+OPTIONS: toc:nil reveal-center:f H:4
+
+* First slide
+
+This is an example text.  Now for some Emacs Lisp:
+
+#+begin_src elisp
+(defun my-first-function (foo bar)
+  "I'm the documentation."
+  (let ((this 'that))
+    (when this
+      (message "This"))))
+#+end_src
+
+* A slide with LaTeX
+
+We can even write fancy math symbols and stuff.  Like
+$\int_{i=0}^\infty f \mathrm{d}\lambda$.
+
+* Diagrams!
+
+Writing PlantUML code to get nice images.
+
+#+begin_src plantuml :file plantuml/output/dia.png
+@startuml
+[*] --> State1
+State1 --> [*]
+State1 : this is a string
+State1 : this is another string
+
+State1 -> State2
+State2 --> [*]
+@enduml
+#+end_src
+
+* C4 diagrams
+
+C4 container diagrams are also possible.
+
+#+begin_src plantuml :file plantuml/output/c4.png
+@startuml
+!include plantuml/plugins/C4_Container.puml
+
+Container(client, "web client")
+Container(server, "web server")
+Rel(client, server, "talks to")
+
+@enduml
+#+end_src
+
+* Haskell
+
+As an example for a language where the syntax highlighting doesn't
+work out of the box, here's some Haskell code.
+
+#+begin_src haskell
+type Weight = Integer
+type Sentence = String
+
+-- | Animals may be either dead or alive.
+data Liveness = Alive | Dead
+
+-- | An animal is one of the following:
+-- - an armadillo -OR-
+-- - a parrot
+data Animal
+  = Dillo { dilloLiveness :: Liveness, dilloWeight :: Weight }
+  | Parrot Sentence Weight
+
+dillo = Dillo Alive 123
+
+runOverAnimal :: Animal -> Animal
+runOverAnimal = undefined
+#+end_src

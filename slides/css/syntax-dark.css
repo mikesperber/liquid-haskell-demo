@@ -1,0 +1,92 @@
+/* Colors taken from the Modus Vivendi theme, which fulfills the WCAG
+   AAA standard for accessibility.
+*/
+
+:root {
+    --color-builtin: #feacd0;
+    --font-weight-builtin: bold;
+    --color-doc: #bfebe0;
+    --color-type: #6ae4b9;
+    --font-weight-type: bold;
+    --color-string: #006800;
+    --color-comment: #4fe42f;
+    --color-keyword: #3fdfd0;
+    --font-weight-keyword: bold;
+    --color-warning: #d0bc00;
+    --color-constant: #ffa0a0;
+    --color-doc-markup: var(--doc);
+    --color-preprocessor: #2fafff;
+    --color-function-name: #ff62d4;
+    --color-variable-name: #4fafff;
+}
+
+.org-builtin {
+    color: var(--color-builtin);
+    font-weight: var(--font-weight-builtin);
+}
+
+.org-doc {
+    color: var(--color-doc);
+}
+
+.org-type {
+    color: var(--color-type);
+    font-weight: var(--font-weight-type);
+}
+
+.org-string {
+    color: var(--color-string);
+}
+
+.org-comment {
+    color: var(--color-comment);
+}
+
+.org-keyword {
+    color: var(--color-keyword);
+    font-weight: var(--font-weight-keyword);
+}
+
+.org-warning {
+    color: var(--color-warning);
+}
+
+.org-constant {
+    color: var(--color-constant);
+}
+
+.org-preprocessor {
+    color: var(--color-preprocessor);
+}
+
+.org-function-name {
+    color: var(--color-function-name);
+}
+
+.org-variable-name {
+    color: var(--color-variable-name);
+}
+
+/* Haskell-specific classes */
+
+.org-haskell-keyword {
+    color: var(--color-keyword);
+    font-weight: var(--font-weight-keyword);
+}
+
+.org-haskell-type {
+    color: var(--color-type);
+    font-weight: var(--font-weight-type);
+}
+
+.org-haskell-constructor {
+    color: var(--color-type);
+}
+
+.org-haskell-operator {
+    color: var(--color-variable-name);
+}
+
+.org-haskell-definition {
+    color: var(--color-function-name);
+}

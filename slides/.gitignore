@@ -1,0 +1,4 @@
+*.html
+*.pdf
+plantuml/plugins
+/result*
