@@ -67,10 +67,17 @@ typedef struct {
 } Bres;
 
 void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
-    //@ requires true;
-    //@ ensures true;
+    //@ requires Bres_dx_(b, _) &*& Bres_dy_(b, _) &*& Bres_x_(b, _) &*& Bres_y_(b, _) &*& Bres_d_(b, _) &*& Bres_incE_(b, _) &*& Bres_incNE_(b, _) &*& Bres_signal_(b, _);
+    //@ ensures Bres_dx(b, _) &*& Bres_dy(b, _) &*& Bres_x(b, _) &*& Bres_y(b, _) &*& Bres_d(b, _) &*& Bres_incE(b, _) &*& Bres_incNE(b, _) &*& Bres_signal(b, _);
 {
-    // ...
+    b->dx = 0;
+    b->dy = 0;
+    b->x = 0;
+    b->y = 0;
+    b->d = 0;
+    b->incE = 0;
+    b->incNE = 0;
+    b->signal = 0;
 }
 
 void step(Bres *b) {}
