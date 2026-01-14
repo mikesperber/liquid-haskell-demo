@@ -79,22 +79,22 @@ predicate bres_access(Bres *b) =
     Bres_signal_(b, _)
 ;
 
-predicate bres_state(Bres *b) =
-    Bres_dx(b, _)       &*&
-    Bres_dy(b, _)       &*&
-    Bres_x(b, _)        &*&
-    Bres_y(b, _)        &*&
-    Bres_d(b, _)        &*&
-    Bres_incE(b, _)     &*&
-    Bres_incNE(b, _)    &*&
-    Bres_signal(b, _)
+predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
+    b->dx     |-> dx    &*&
+    b->dy     |-> dy    &*&
+    b->x      |-> x     &*&
+    b->y      |-> y     &*&
+    b->d      |-> d     &*&
+    b->incE   |-> _     &*&
+    b->incNE  |-> _     &*&
+    b->signal |-> s
 ;
 
 @*/
 
 void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
     //@ requires bres_access(b);
-    //@ ensures bres_state(b);
+    //@ ensures bres_state(b, _, _, _, _, _, _);
 {
     //@ open bres_access(b);
     b->dx = 0;
@@ -105,7 +105,7 @@ void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
     b->incE = 0;
     b->incNE = 0;
     b->signal = 0;
-    //@ close bres_state(b);
+    //@ close bres_state(b, _, _, _, _, _, _);
 }
 
 void step(Bres *b) {}
@@ -117,7 +117,7 @@ void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     Bres state;
     //@ close bres_access(&state);
     init(lowerRateLimitBpm, intrinsicRateBpm, &state);
-    //@ open bres_state(&state);
+    //@ open bres_state(&state, _, _, _, _, _, _);
 }
 
 int main()
