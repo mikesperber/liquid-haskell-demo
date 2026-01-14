@@ -100,8 +100,9 @@ predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
     0 <= x &*&                  // follows from initial state and x_i == x_(i-1) + 1
     0 <= y &*&                  // follows from initial state and y_i == y_(i-1) || y_i == y_(i-1) + 1
 
-    // "Bresenham" invariant about d
+    // "Bresenham" invariant of d
     d == 2*dy*x - 2*dx*y + 2*dy - dx &*&
+
     // Pixel correctness invariant: 2*dx*y - dx <= 2*dy*x <= 2*dx*y + dx
     -dx <= err(dx, dy, x, y) &*& err(dx, dy, x, y) <= dx
 ;
