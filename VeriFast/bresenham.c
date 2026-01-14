@@ -81,6 +81,10 @@ predicate bres_access(Bres *b) =
     Bres_signal_(b, _)
 ;
 
+fixpoint int err(int dx, int dy, int x, int y) {
+    return 2*dy*x - 2*dx*y;
+}
+
 predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
     b->dx     |-> dx            &*&
     b->dy     |-> dy            &*&
@@ -97,7 +101,9 @@ predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
     0 <= y &*&                  // follows from initial state and y_i == y_(i-1) || y_i == y_(i-1) + 1
 
     // "Bresenham" invariant about d
-    d == 2*dy*x - 2*dx*y + 2*dy - dx
+    d == 2*dy*x - 2*dx*y + 2*dy - dx &*&
+    // Pixel correctness invariant: 2*dx*y - dx <= 2*dy*x <= 2*dx*y + dx
+    -dx <= err(dx, dy, x, y) &*& err(dx, dy, x, y) <= dx
 ;
 
 @*/
