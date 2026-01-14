@@ -89,13 +89,21 @@ predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
     b->d      |-> d             &*&
     b->incE   |-> 2*dy          &*&
     b->incNE  |-> 2*(dy - dx)   &*&
-    b->signal |-> s
+    b->signal |-> s             &*&
+
+    // basic bounds/shape
+    0 <= dy &*& dy <= dx &*&    // Note: both dy == 0 and dy == dx edge cases are indeed fine
+    0 <= x &*&                  // follows from initial state and x_i == x_(i-1) + 1
+    0 <= y &*&                  // follows from initial state and y_i == y_(i-1) || y_i == y_(i-1) + 1
+
+    // "Bresenham" invariant about d
+    d == 2*dy*x - 2*dx*y + 2*dy - dx
 ;
 
 @*/
 
 void init(int x, int y, Bres *b)
-    //@ requires bres_access(b);
+    //@ requires bres_access(b) &*& 0 <= y &*& y <= x;
     //@ ensures bres_state(b, x, y, 0, 0, 2*y - x, NoPulse);
 {
     //@ open bres_access(b);
@@ -113,7 +121,7 @@ void init(int x, int y, Bres *b)
 void step(Bres *b) {}
 
 void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
-    //@ requires true;
+    //@ requires 0 <= intrinsicRateBpm &*& intrinsicRateBpm <= lowerRateLimitBpm;
     //@ ensures true;
 {
     Bres state;
