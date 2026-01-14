@@ -66,10 +66,37 @@ typedef struct {
     Signal signal;
 } Bres;
 
+/*@
+
+predicate bres_access(Bres *b) =
+    Bres_dx_(b, _)      &*&
+    Bres_dy_(b, _)      &*&
+    Bres_x_(b, _)       &*&
+    Bres_y_(b, _)       &*&
+    Bres_d_(b, _)       &*&
+    Bres_incE_(b, _)    &*&
+    Bres_incNE_(b, _)   &*&
+    Bres_signal_(b, _)
+;
+
+predicate bres_state(Bres *b) =
+    Bres_dx(b, _)       &*&
+    Bres_dy(b, _)       &*&
+    Bres_x(b, _)        &*&
+    Bres_y(b, _)        &*&
+    Bres_d(b, _)        &*&
+    Bres_incE(b, _)     &*&
+    Bres_incNE(b, _)    &*&
+    Bres_signal(b, _)
+;
+
+@*/
+
 void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
-    //@ requires Bres_dx_(b, _) &*& Bres_dy_(b, _) &*& Bres_x_(b, _) &*& Bres_y_(b, _) &*& Bres_d_(b, _) &*& Bres_incE_(b, _) &*& Bres_incNE_(b, _) &*& Bres_signal_(b, _);
-    //@ ensures Bres_dx(b, _) &*& Bres_dy(b, _) &*& Bres_x(b, _) &*& Bres_y(b, _) &*& Bres_d(b, _) &*& Bres_incE(b, _) &*& Bres_incNE(b, _) &*& Bres_signal(b, _);
+    //@ requires bres_access(b);
+    //@ ensures bres_state(b);
 {
+    //@ open bres_access(b);
     b->dx = 0;
     b->dy = 0;
     b->x = 0;
@@ -78,6 +105,7 @@ void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
     b->incE = 0;
     b->incNE = 0;
     b->signal = 0;
+    //@ close bres_state(b);
 }
 
 void step(Bres *b) {}
@@ -87,7 +115,9 @@ void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     //@ ensures true;
 {
     Bres state;
+    //@ close bres_access(&state);
     init(lowerRateLimitBpm, intrinsicRateBpm, &state);
+    //@ open bres_state(&state);
 }
 
 int main()
