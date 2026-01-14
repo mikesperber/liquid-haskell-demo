@@ -118,7 +118,18 @@ void init(int x, int y, Bres *b)
     //@ close bres_state(b, x, y, 0, 0, 2*y - x, NoPulse);
 }
 
-void step(Bres *b) {}
+void step(Bres *b)
+    //@ requires bres_state(b, _, _, _, _, _, _);
+    //@ ensures bres_state(b, _, _, _, _, _, _);
+{
+    //@ open bres_state(b, _, _, _, _, _, _);
+    if (b->d < 0) {
+        // ...
+    } else {
+        // ...
+    }
+    //@ close bres_state(b, _, _, _, _, _, _);
+}
 
 void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     //@ requires 0 <= intrinsicRateBpm &*& intrinsicRateBpm <= lowerRateLimitBpm;
@@ -127,6 +138,11 @@ void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     Bres state;
     //@ close bres_access(&state);
     init(lowerRateLimitBpm, intrinsicRateBpm, &state);
+    while (1)
+        //@ invariant bres_state(&state, _, _, _, _, _, _);
+    {
+        step(&state);
+    }
     //@ open bres_state(&state, _, _, _, _, _, _);
 }
 
