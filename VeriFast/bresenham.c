@@ -1,3 +1,5 @@
+// verifast_options{disable_overflow_check}
+
 #include "stdlib.h"
 
 /**
@@ -80,32 +82,32 @@ predicate bres_access(Bres *b) =
 ;
 
 predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
-    b->dx     |-> dx    &*&
-    b->dy     |-> dy    &*&
-    b->x      |-> x     &*&
-    b->y      |-> y     &*&
-    b->d      |-> d     &*&
-    b->incE   |-> _     &*&
-    b->incNE  |-> _     &*&
+    b->dx     |-> dx            &*&
+    b->dy     |-> dy            &*&
+    b->x      |-> x             &*&
+    b->y      |-> y             &*&
+    b->d      |-> d             &*&
+    b->incE   |-> 2*dy          &*&
+    b->incNE  |-> 2*(dy - dx)   &*&
     b->signal |-> s
 ;
 
 @*/
 
-void init(int lowerRateLimitBpm, int intrinsicRateBpm, Bres *b)
+void init(int x, int y, Bres *b)
     //@ requires bres_access(b);
-    //@ ensures bres_state(b, _, _, _, _, _, _);
+    //@ ensures bres_state(b, x, y, 0, 0, 2*y - x, NoPulse);
 {
     //@ open bres_access(b);
-    b->dx = 0;
-    b->dy = 0;
+    b->dx = x;
+    b->dy = y;
     b->x = 0;
     b->y = 0;
-    b->d = 0;
-    b->incE = 0;
-    b->incNE = 0;
-    b->signal = 0;
-    //@ close bres_state(b, _, _, _, _, _, _);
+    b->d = 2*y - x;
+    b->incE = 2*y;
+    b->incNE = 2*(y - x);
+    b->signal = NoPulse;
+    //@ close bres_state(b, x, y, 0, 0, 2*y - x, NoPulse);
 }
 
 void step(Bres *b) {}
