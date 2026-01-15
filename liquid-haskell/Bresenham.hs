@@ -16,7 +16,26 @@ module Bresenham where
  @-}
 data Bresenstate = Bresenstate Int Int Int Int Int
 
-{-@ type Bresenstate' = {b: Bresenstate | 2 * (y b) * (dx b) - (dx b) <= 2 * (dy b) * (x b) && 2 * (dy b) * (x b) <= 2 * (y b) * (dx b) + (dx b) } @-}
+{-@ measure ideal_y_times_2dx @-}
+{-@ ideal_y_times_2dx :: Bresenstate -> Nat @-}
+ideal_y_times_2dx :: Bresenstate -> Int
+ideal_y_times_2dx (Bresenstate _ dy x _ _) = 2 * dy * x
+
+{-@ measure y_minus_half_times_2dx @-}
+{-@ y_minus_half_times_2dx :: Bresenstate -> Int @-}
+y_minus_half_times_2dx :: Bresenstate -> Int
+y_minus_half_times_2dx (Bresenstate dx _ _ y _) = 2 * y * dx - dx
+
+{-@ measure y_plus_half_times_2dx @-}
+{-@ y_plus_half_times_2dx :: Bresenstate -> Int @-}
+y_plus_half_times_2dx :: Bresenstate -> Int
+y_plus_half_times_2dx (Bresenstate dx _ _ y _) = 2 * y * dx + dx
+
+{-@
+type Bresenstate' = {b: Bresenstate |
+                            y_minus_half_times_2dx b <= ideal_y_times_2dx b &&
+                            ideal_y_times_2dx b <= y_plus_half_times_2dx b }
+@-}
 type Bresenstate' = Bresenstate
 
 pulsed' :: Bresenstate' -> Bool
