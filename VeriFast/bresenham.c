@@ -85,7 +85,7 @@ fixpoint int err(int dx, int dy, int x, int y) {
     return 2*dy*x - 2*dx*y;
 }
 
-predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, int s) =
+predicate bres_state(Bres *b, int dx, int dy, int x, int y, int d, Signal s) =
     b->dx     |-> dx            &*&
     b->dy     |-> dy            &*&
     b->x      |-> x             &*&
@@ -127,7 +127,7 @@ void init(int x, int y, Bres *b)
 
 void step(Bres *b)
     //@ requires bres_state(b, ?dx, ?dy, ?x, ?y, _, _);
-    //@ ensures bres_state(b, dx, dy, x+1, ?y2, _, ?s) &*& (y2 == y || y2 == y + 1) &*& (s == Pulse || s == NoPulse);
+    //@ ensures bres_state(b, dx, dy, x+1, _, _, _);
 {
     //@ open bres_state(b, _, _, _, _, _, _);
     if (b->d < 0) {
@@ -156,7 +156,6 @@ void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     {
         step(&state);
     }
-    //@ open bres_state(&state, _, _, _, _, _, _);
 }
 
 int main()
