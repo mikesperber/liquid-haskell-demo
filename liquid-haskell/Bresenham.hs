@@ -36,7 +36,7 @@ incne (Bresenstate dx dy x y d) = 2 * (dy - dx)
 bresenstep :: Bresenstate' -> Bresenstate'
 bresenstep b@(Bresenstate dx dy x y d)
   | d < 0 = Bresenstate dx dy (x + 1) y (d + (ince b))
-  | d >= 0 = Bresenstate dx dy (x + 1) (y + 1) (d + (incne b))
+  | otherwise = Bresenstate dx dy (x + 1) (y + 1) (d + (incne b))
 
 {-@ bresinit :: {dx:Nat | dx > 0} -> {dy:Nat | dy <= dx} -> Bresenstate' @-}
 bresinit :: Int -> Int -> Bresenstate'
