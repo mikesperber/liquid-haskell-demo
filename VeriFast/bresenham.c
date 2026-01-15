@@ -152,10 +152,16 @@ void bresenham(int lowerRateLimitBpm, int intrinsicRateBpm)
     //@ close bres_access(&state);
     init(lowerRateLimitBpm, intrinsicRateBpm, &state);
     while (1)
-        //@ invariant bres_state(&state, lowerRateLimitBpm, intrinsicRateBpm, _, _, _, _);
+        //@ invariant bres_state(&state, lowerRateLimitBpm, intrinsicRateBpm, ?x, _, _, _) &*& x <= lowerRateLimitBpm;
+        //@ decreases lowerRateLimitBpm - x;
     {
+        //@open bres_state(&state, _, _, _, _, _, _);
+        int cx = state.x;
+        //@close bres_state(&state, _, _, _, _, _, _);
+        if (cx == lowerRateLimitBpm) break;
         step(&state);
     }
+    //@ open bres_state(&state, _, _, lowerRateLimitBpm, _, _, _);
 }
 
 int main()
