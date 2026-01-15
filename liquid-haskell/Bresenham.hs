@@ -16,25 +16,25 @@ module Bresenham where
  @-}
 data Bresenstate = Bresenstate Int Int Int Int Int
 
-{-@ measure ideal_y_times_2dx @-}
-{-@ ideal_y_times_2dx :: Bresenstate -> Nat @-}
-ideal_y_times_2dx :: Bresenstate -> Int
-ideal_y_times_2dx (Bresenstate _ dy x _ _) = 2 * dy * x
+{-@ measure ideal_y_minus_half_times_2dx @-}
+{-@ ideal_y_minus_half_times_2dx :: Bresenstate -> Int @-}
+ideal_y_minus_half_times_2dx :: Bresenstate -> Int
+ideal_y_minus_half_times_2dx (Bresenstate dx dy x _ _) = 2 * dy * x - dx
 
-{-@ measure y_minus_half_times_2dx @-}
-{-@ y_minus_half_times_2dx :: Bresenstate -> Int @-}
-y_minus_half_times_2dx :: Bresenstate -> Int
-y_minus_half_times_2dx (Bresenstate dx _ _ y _) = 2 * y * dx - dx
+{-@ measure computed_y_times_2dx @-}
+{-@ computed_y_times_2dx :: Bresenstate -> Nat @-}
+computed_y_times_2dx :: Bresenstate -> Int
+computed_y_times_2dx (Bresenstate dx _ _ y _) = y * 2 * dx
 
-{-@ measure y_plus_half_times_2dx @-}
-{-@ y_plus_half_times_2dx :: Bresenstate -> Int @-}
-y_plus_half_times_2dx :: Bresenstate -> Int
-y_plus_half_times_2dx (Bresenstate dx _ _ y _) = 2 * y * dx + dx
+{-@ measure ideal_y_plus_half_times_2dx @-}
+{-@ ideal_y_plus_half_times_2dx :: Bresenstate -> Int @-}
+ideal_y_plus_half_times_2dx :: Bresenstate -> Int
+ideal_y_plus_half_times_2dx (Bresenstate dx dy x _ _) = 2 * dy * x + dx
 
 {-@
 type Bresenstate' = {b: Bresenstate |
-                            y_minus_half_times_2dx b <= ideal_y_times_2dx b &&
-                            ideal_y_times_2dx b <= y_plus_half_times_2dx b }
+                            ideal_y_minus_half_times_2dx b <= computed_y_times_2dx b &&
+                            computed_y_times_2dx b <= ideal_y_plus_half_times_2dx b }
 @-}
 type Bresenstate' = Bresenstate
 
