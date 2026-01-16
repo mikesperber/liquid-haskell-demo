@@ -8,11 +8,11 @@ module Bresenham where
 -- import Language.Haskell.Liquid.ProofCombinators
 
 {-@ data Bresenstate = Bresenstate
-                         (dx :: {v: Nat | v > 0})
-                         (dy :: {v: Nat | v <= dx})
+                         (dx :: Nat)
+                         (dy :: Nat)
                          (x :: Nat)
                          (y :: Nat)
-                         (d :: {v: Int | v == 2 * dy * x - 2 * dx * y + 2 * dy - dx})
+                         (d :: Int)
  @-}
 data Bresenstate = Bresenstate Int Int Int Int Int
 
@@ -33,8 +33,13 @@ ideal_y_plus_half_times_2dx (Bresenstate dx dy x _ _) = 2 * dy * x + dx
 
 {-@
 type Bresenstate' = {b: Bresenstate |
+                            (dx b) > 0 &&
+                            (dy b) <= (dx b) &&
+                            (d b) == 2 * (dy b) * (x b) - 2 * (dx b) * (y b) + 2 * (dy b) - (dx b) &&
+
                             ideal_y_minus_half_times_2dx b <= computed_y_times_2dx b &&
-                            computed_y_times_2dx b <= ideal_y_plus_half_times_2dx b }
+                            computed_y_times_2dx b <= ideal_y_plus_half_times_2dx b
+                     }
 @-}
 type Bresenstate' = Bresenstate
 
