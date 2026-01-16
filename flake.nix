@@ -48,41 +48,36 @@
           # Pin GHC version for easier, explicit upgrades later
           ghcVersion = "9122";
           legacyPackages = nixpkgs.legacyPackages.${system};
-          nixpkgsPatched = legacyPackages.applyPatches {
-            name = "verifast-on-macos";
-            src = nixpkgs;
-            patches = legacyPackages.fetchpatch {
-              url = "https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/429378.patch";
-              hash = "sha256-Xtm/5VhoaLW6T1uKbDOZiw+ZaFQcUZy3cmWdNTHHIHE=";
+          makePkgs =
+            nixpkgsImport:
+            import nixpkgsImport {
+              inherit system;
+              config.allowUnfree = true;
+              overlays = [
+                (
+                  final: prev:
+                  let
+                    hlib = final.haskell.lib.compose;
+                  in
+                  {
+                    haskellPackages = prev.haskell.packages."ghc${ghcVersion}".override (old: {
+                      overrides = final.lib.composeExtensions (old.overrides or (_: _: { })) (
+                        hfinal: hprev: {
+                          store = hlib.dontCheck hprev.store;
+                          liquidhaskell-boot = hprev.liquidhaskell-boot_0_9_12_2;
+                          liquid-fixpoint = hlib.dontCheck hprev.liquid-fixpoint_0_9_6_3_3;
+                          liquidhaskell = hlib.overrideCabal (drv: { doHaddock = false; }) hprev.liquidhaskell_0_9_12_2;
+                        }
+                      );
+                    });
+                    z3 = prev.z3.overrideAttrs (oldAttrs: {
+                      doCheck = false;
+                    });
+                  }
+                )
+              ];
             };
-          };
-          pkgs = import nixpkgsPatched {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = [
-              (
-                final: prev:
-                let
-                  hlib = final.haskell.lib.compose;
-                in
-                {
-                  haskellPackages = prev.haskell.packages."ghc${ghcVersion}".override (old: {
-                    overrides = final.lib.composeExtensions (old.overrides or (_: _: { })) (
-                      hfinal: hprev: {
-                        store = hlib.dontCheck hprev.store;
-                        liquidhaskell-boot = hprev.liquidhaskell-boot_0_9_12_2;
-                        liquid-fixpoint = hlib.dontCheck hprev.liquid-fixpoint_0_9_6_3_3;
-                        liquidhaskell = hlib.overrideCabal (drv: { doHaddock = false; }) hprev.liquidhaskell_0_9_12_2;
-                      }
-                    );
-                  });
-                  z3 = prev.z3.overrideAttrs (oldAttrs: {
-                    doCheck = false;
-                  });
-                }
-              )
-            ];
-          };
+          pkgs = makePkgs nixpkgs;
           emacs = pkgs.emacs30.pkgs.withPackages (p: [
             p.org-re-reveal
             p.haskell-mode
@@ -138,16 +133,28 @@
               }
             );
 
-            verifast = pkgs.mkShell {
-              packages = [
-                pkgs.verifast
-              ];
+            verifast =
+              let
+                # if we use this for Haskell dev shell, things fail in spectacularly mysterious ways
+                nixpkgsPatched = legacyPackages.applyPatches {
+                  name = "verifast-on-macos";
+                  src = nixpkgs;
+                  patches = legacyPackages.fetchpatch {
+                    url = "https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/429378.patch";
+                    hash = "sha256-Xtm/5VhoaLW6T1uKbDOZiw+ZaFQcUZy3cmWdNTHHIHE=";
+                  };
+                };
+              in
+              pkgs.mkShell {
+                packages = [
+                  (makePkgs nixpkgsPatched).verifast
+                ];
 
-              shellHook = ''
-                export PS1="\n\[\033[1;32m\][nix-shell:\W \[\033[1;31m\]FM\[\033[1;32m\]]\$\[\033[0m\] "
-                echo -e "\n\033[1;31m ♣ ♠ Welcome to FM - Verifast! ♥ ♦ \033[0m\n"
-              '';
-            };
+                shellHook = ''
+                  export PS1="\n\[\033[1;32m\][nix-shell:\W \[\033[1;31m\]FM\[\033[1;32m\]]\$\[\033[0m\] "
+                  echo -e "\n\033[1;31m ♣ ♠ Welcome to FM - Verifast! ♥ ♦ \033[0m\n"
+                '';
+              };
 
           };
 
