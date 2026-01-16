@@ -1,6 +1,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fplugin=LiquidHaskell #-}
 {-@ LIQUID "--exactdc" @-}
+-- Dump constraints to .liquid/Bresenham.fq.prettified
+{-@ LIQUID "--save" @-}
 -- {-@ LIQUID "--reflection" @-}
 
 module Bresenham where
@@ -38,10 +40,45 @@ type Bresenstate' = {b: Bresenstate |
                             (d b) == 2 * (dy b) * (x b) - 2 * (dx b) * (y b) + 2 * (dy b) - (dx b) &&
 
                             ideal_y_minus_half_times_2dx b <= computed_y_times_2dx b &&
-                            computed_y_times_2dx b <= ideal_y_plus_half_times_2dx b
+                            computed_y_times_2dx b <= ideal_y_plus_half_times_2dx b &&
+
+                            (dy b) / (dx b) * (x b) - 1/2 <= (y b) &&
+                            True
                      }
 @-}
 type Bresenstate' = Bresenstate
+
+{-@ lemma0 :: x:Int -> y:Int -> {z:Nat | z > 0} -> { x * z <= y => x <= y / z } @-}
+lemma0 :: Int -> Int -> Int -> ()
+lemma0 _ _ _ = ()
+
+{-@ lemma1 :: x:Int -> y:Int -> {z:Nat | z > 0} -> { x * z <= y * z => x <= y } @-}
+lemma1 :: Int -> Int -> Int -> ()
+lemma1 _ _ _ = ()
+
+{-@ lemma2 :: x:Nat -> y:Nat -> {dx:Nat | dx > 0} -> dy:Nat -> { 2 * dy * x - dx <= y * 2 * dx => dy / dx * x - 1/2 <= y } @-}
+lemma2 :: Int -> Int -> Int -> Int -> ()
+lemma2 _ _ _ _ = ()
+
+{-@ lemma3 :: x:Nat -> y:Nat -> {dx:Nat | dx > 0} -> dy:Nat -> { y * 2 * dx <= (2 * dy * x) + dx      =>       y * dx <= (dy * x) + (dx / 2) } @-}
+lemma3 :: Int -> Int -> Int -> Int -> ()
+lemma3 _ _ _ _ = ()
+
+{-@ lemma4 :: {x:Nat | x > 0} -> {y:Nat | y > 0} -> {dx:Nat | dx > 0} -> {dy:Nat | dy > 0} -> { y * dx <= dy * x       =>      y <= (dy * x) / dx } @-}
+lemma4 :: Int -> Int -> Int -> Int -> ()
+lemma4 _ _ _ _ = ()
+
+{-@ lemma5 :: {x:Nat | x > 0} -> {y:Nat | y > 0} -> {dx:Nat | dx > 0} -> {dy:Nat | dy > 0} -> { y * dx <= (dy * x) + (dx / 2)      =>       y <= ((dy * x) + (dx / 2)) / dx } @-}
+lemma5 :: Int -> Int -> Int -> Int -> ()
+lemma5 _ _ _ _ = ()
+
+{-@ distributivity_of_mult_over_plus :: {a:Nat | a > 0} -> {b:Nat | b > 0} -> {c:Nat | c > 0} -> { (a + b) * c == a*c + b*c } @-}
+distributivity_of_mult_over_plus :: Int -> Int -> Int -> ()
+distributivity_of_mult_over_plus _ _ _ = ()
+
+-- {-@ distributivity_of_div_over_plus :: {a:Nat | a > 0} -> {b:Nat | b > 0} -> {c:Nat | c > 0} -> { (a + b) / c == a/c + b/c } @-}
+-- distributivity_of_div_over_plus :: Int -> Int -> Int -> ()
+-- distributivity_of_div_over_plus _ _ _ = ()
 
 pulsed' :: Bresenstate' -> Bool
 pulsed' (Bresenstate _ _ _ _ d) = d >= 0
