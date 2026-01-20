@@ -1,0 +1,98 @@
+#+title: iSAQB Module: Formal Methods - VeriFast
+#+author: Active Group GmbH
+#+REVEAL_PLUGINS: (notes)
+#+REVEAL_THEME: ./css/themes/active.css
+#+REVEAL_HLEVEL: 100
+#+REVEAL_TRANS: none
+#+OPTIONS: num:nil toc:nil reveal-center:f H:4 tags:nil
+
+* VeriFast                                                               :en:
+
+- Repo: [[https://github.com/verifast/verifast][https://github.com/verifast/verifast]]
+- DOI: [[https://doi.org/10.5281/zenodo.4705415][https://doi.org/10.5281/zenodo.4705415]]
+- semi-automated modular formal program verification tool
+- verification of single-threaded and multi-threaded C, Rust and Java programs
+- underlying SMT solver: Z3 Theorem Prover
+
+* VeriFast                                                               :de:
+
+- Repo: [[https://github.com/verifast/verifast][https://github.com/verifast/verifast]]
+- DOI: [[https://doi.org/10.5281/zenodo.4705415][https://doi.org/10.5281/zenodo.4705415]]
+- halb-automatisiertes Werkzeug zur Modularen Formalen Verifikation
+- Verifikation von single-threaded und multi-threaded C, Rust und Java Programmen
+- zugrunde liegender SMT-Solver: Z3 Theorem Prover
+
+* C Program Verification                                                 :en:
+
+VeriFast checks for:
+- illegal memory accesses
+- data races (certain type of concurrency errors)
+- compliance of pre- and postconditions -- provided by the programmer
+
+* C Program Verifikation                                                 :de:
+
+VeriFast prüft:
+- auf illegale Memory-Zugriffe
+- auf data races (eine bestimmte Art von Nebenläufigkeitsfehler)
+- die Einhaltung von Vor- und Nachbedingungen, die das Programmiery bereitstellt
+
+* Vocabulary
+
+- modular symbolic execution
+- preconditions and postconditions
+- symbols
+- symbolic state
+- symbolic heap
+- permissions / chunks
+- symbolic store
+- path condition
+- (set of) assumptions
+- execution path
+- loop invariants
+
+#+begin_notes
+To detect all errors, VeriFast performs modular symbolic execution of the program. In particular,
+VeriFast symbolically executes the body of each function of the program, starting from the symbolic state
+described by the function’s precondition, checking that permissions are present in the symbolic state for
+each memory location accessed by a statement, updating the symbolic state to take into account each
+statement’s effect, and checking, whenever the function returns, that the final symbolic state satisfies the
+function’s postcondition. A symbolic state consists of a symbolic heap, containing permissions (known as
+chunks) for accessing certain memory locations, a symbolic store, assigning a symbolic value to each local
+variable, and a path condition, which is the set of assumptions about the values of the symbols used in the
+symbolic state on the current execution path. Symbolic execution always terminates, because thanks to
+the use of loop invariants each loop body needs to be symbolically executed only once, and symbolically
+executing a function call uses only the function’s precondition and postcondition, not its body.
+
+https://doi.org/10.5281/zenodo.887906
+#+end_notes
+
+* Running VeriFast                                                       :en:
+
+operating systems:
+- Windows
+- Linux
+- macOS
+user interfaces:
+- VeriFast IDE
+- VeriFast Visual Studio Code Extension
+- VeriFast command-line tool
+
+* VeriFast Verwenden                                                     :de:
+
+Betriebssysteme:
+- Windows
+- Linux
+- macOS
+
+Benutzeroberfläche:
+- VeriFast IDE
+- VeriFast Visual Studio Code Extension
+- VeriFast command-line tool
+
+* Resources
+- Repository: [[https://github.com/verifast/verifast][https://github.com/verifast/verifast]]
+- DOI: [[https://doi.org/10.5281/zenodo.4705415][https://doi.org/10.5281/zenodo.4705415]]
+- Introduction: [[https://github.com/verifast/verifast/blob/master/intro-c.md][https://github.com/verifast/verifast/blob/master/intro-c.md]]
+- Tutorial: [[https://doi.org/10.5281/zenodo.887906][https://doi.org/10.5281/zenodo.887906]]
+- Papers: [[https://people.cs.kuleuven.be/~bart.jacobs/verifast/][https://people.cs.kuleuven.be/~bart.jacobs/verifast/]]
+- Documentation (work in progress): [[https://verifast.github.io/verifast-docs/][https://verifast.github.io/verifast-docs/]]
