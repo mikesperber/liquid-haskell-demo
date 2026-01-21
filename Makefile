@@ -3,7 +3,7 @@ HTML = $(SOURCES:.org=.html)
 PDF = $(SOURCES:.org=.pdf)
 CHROME = $(shell which google-chrome-beta || which google-chrome-stable || which google-chrome || which chromium || echo "`pwd`/mac-chrome.sh")
 MAYBE_CHROME_PATH = $(if $(CHROME),--chrome-path $(CHROME),)
-RESOURCES = $(shell find css -type f)
+RESOURCES = $(shell find slides/css -type f)
 
 ONEPDF=slides/all-slides.pdf
 
