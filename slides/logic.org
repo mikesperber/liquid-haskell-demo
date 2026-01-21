@@ -1,0 +1,89 @@
+#+title: Logic
+#+REVEAL_PLUGINS: (notes)
+#+REVEAL_THEME: ./css/themes/active.css
+#+REVEAL_HLEVEL: 100
+#+REVEAL_TRANS: none
+#+OPTIONS: toc:nil reveal-center:f H:4
+
+* Propositional Logic
+
+Propositional formulae $F, G, \ldots \in \mathcal{D}$
+
+- /atomic formulae/ $A, B, C, \ldots \in \mathcal{D} = \{ A_1, A_2, A_3, \ldots \}$
+- /negation/ $\neg F$
+- /disjunction/ $(F \vee G)$
+- /conjunction/ $(F \wedge G)$
+
+* Notation
+
+- /implication/ $(F\Rightarrow G) \equiv (\neg F \vee G)$
+- /equivalence/ $(F\Leftrightarrow G) \equiv ((F \Rightarrow G) \wedge (G \Rightarrow F))$
+
+* Semantics
+
+- truth values $\mathcal{T} = \{0, 1\}$
+- /assignment/ $\mathcal{A} : \mathcal{D} \rightarrow \mathcal{T}$
+
+Extend assignment to /semantics/model/ $\mathcal{A}': \mathcal{E} \rightarrow
+\mathcal{T}$.
+
+1. $A_i\in \mathcal{D}: \mathcal{A}'(A_i) = \mathcal{A}(A_i)$
+2. $\mathcal{A}'(\neg F) = \begin{cases} 1 & \mathcal{A}'(F) = 0 \\ 0 & otherwise\end{cases}$
+3. $\mathcal{A}'((F \wedge G)) = \begin{cases} 1 & \mathcal{A}'(F) = 1 \text{ and } \mathcal{A}'(G) = 1 \\ 0 & \text{otherwise} \end{cases}$
+4. $\mathcal{A}'((F \vee G)) = \begin{cases} 1 & \mathcal{A}'(F) = 1 \text{ or } \mathcal{A}'(G) = 1 \\ 0 & \text{otherwise} \end{cases}$
+
+* Exercise
+
+Calculate the semantics of $\neg((A\wedge B) \vee C$ for the
+assignment $\mathcal{A}(A)=1, \mathcal{A}(B)=1, \mathcal{A}(C)=0$!
+   
+* Semantics Notation & terminology
+
+- $\mathcal{A} \vDash F \equiv \mathcal{A}'(F) = 1$: $\mathcal{A}$ is a
+  /model/ for $F$
+- model exists: /satisfiable/
+- no model exists: /unsatisfiable/
+- all assignments are models: /tautology/
+
+* Predicate Logic
+
+- /variables/ $u, v, w, x, y, z, \ldots \in \mathcal{V} = \{x_1, x_2, x_3, \ldots \}$
+- /function symbols/ $f, g, h, \ldots \in \mathcal{F} = \{f_1, f_2, f_3,
+  \ldots \}$
+- each function symbol has /arity/ $k \in \mathcal{N}$
+- constants $a, b, c, \ldots$ are function symbols with arity $0$
+ 
+/Terms/ $t_1, \ldots, t_n$:
+
+1. Each variable is a term.
+2. $f(t_1, \ldots, t_k)$ if $f$ has arity $k$
+
+* Formulae
+
+- /predicate symbols/ $P, Q, R, \ldots \in \mathcal{P} = \{P_1, P_2, P_3, \ldots \}$
+- each predicate symbol has /arity/ $k \in \mathcal{N}$
+
+Formulae $F, G, \ldots$:
+
+1. /atomic formulae/ $P(t_1, \ldots t_k)$ if $P$ predicate symbol with arity $k$
+2. $\neg F$
+3. $(F \vee G)$
+4. $(F \wedge G)$
+5. $\exists x.F$ ($\exists$ /existential quantifier/)
+6. $\forall x.F$ ($\forall$ /universal quantifier/)
+
+* Free, Bound Variables
+
+Each /occurrences/ of a variable is either /bound/ or /free/.
+
+An occurrence of the variable $x$ in the formula $F$ is /bound/ if $x$
+occurs within a subformula of $F$ of the form $\exists x.F$ or
+$\forall x.F$.
+
+Formula without occurrence of a free variable: /closed/.
+
+* Exercise
+
+Write a formal definition of free and bound variables!
+
+
