@@ -13,7 +13,7 @@ library
 
   -- hs-source-dirs:
   default-language:    Haskell2010
-  ghc-options:      -fwarn-incomplete-patterns -fdefer-type-errors -fplugin=LiquidHaskell
+  ghc-options:      -fwarn-incomplete-patterns -fplugin=LiquidHaskell -Werror
 
-  exposed-modules: Intro
+  exposed-modules: Intro, Bresenham
 
